@@ -4,6 +4,6 @@ scikit-learn
 xgboost
 joblib
 scipy
-streamlit
+streamlit==1.35.0
 fastapi
 uvicorn
