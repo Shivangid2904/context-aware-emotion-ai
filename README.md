@@ -316,6 +316,14 @@ outputs/predictions.csv
 
 ---
 
+## Running the Streamlit Demo
+
+The project includes a simple Streamlit interface for interacting with the model.
+
+Run locally:
+
+streamlit run src/app.py
+
 # Design Philosophy
 
 The system separates:
