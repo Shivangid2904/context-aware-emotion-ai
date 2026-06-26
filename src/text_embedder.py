@@ -1,8 +1,14 @@
+try:
+    import torch
+    import sentence_transformers
+except ImportError:
+    pass
+
 import joblib
 from abc import ABC, abstractmethod
 from sklearn.feature_extraction.text import TfidfVectorizer
 import sklearn.feature_extraction.text
-from config import TEXT_EMBEDDER
+import config
 
 class BaseTextEmbedder(ABC):
     @abstractmethod
@@ -102,7 +108,7 @@ class MiniLMEmbedder(BaseTextEmbedder):
 def get_text_embedder(backend_type=None, **kwargs):
     """Factory function to instantiate text embedder based on backend type."""
     if backend_type is None:
-        backend_type = TEXT_EMBEDDER
+        backend_type = config.TEXT_EMBEDDER
     
     if backend_type == "tfidf":
         return TfidfEmbedder(**kwargs)
@@ -115,7 +121,7 @@ def get_text_embedder(backend_type=None, **kwargs):
 def load_text_embedder(filepath, backend_type=None):
     """Loads a saved text embedder, maintaining backward compatibility with raw TfidfVectorizers."""
     if backend_type is None:
-        backend_type = TEXT_EMBEDDER
+        backend_type = config.TEXT_EMBEDDER
 
     obj = joblib.load(filepath)
 
