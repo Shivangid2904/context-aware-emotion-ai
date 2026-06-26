@@ -3,6 +3,7 @@ import pandas as pd
 import numpy as np
 from scipy.sparse import hstack
 from data_loader import load_data
+from text_embedder import load_text_embedder
 from preprocess import clean_data
 from feature_engineering import encode_metadata
 from decision_engine import decide_action
@@ -17,7 +18,7 @@ def run_prediction():
     state_model = joblib.load("models/state_model.pkl")
     state_encoder = joblib.load("models/state_label_encoder.pkl")
     intensity_model = joblib.load("models/intensity_model.pkl")
-    vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
+    vectorizer = load_text_embedder("models/tfidf_vectorizer.pkl")
     print("Generating features...")
 # Text features
     X_test_text = vectorizer.transform(test_df["journal_text"])

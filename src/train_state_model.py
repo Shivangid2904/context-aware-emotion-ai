@@ -75,7 +75,7 @@ def train_state_model():
     print("Saving models...")
 
     joblib.dump(model, "models/state_model.pkl")
-    joblib.dump(vectorizer, "models/tfidf_vectorizer.pkl")
+    vectorizer.save("models/tfidf_vectorizer.pkl")
     joblib.dump(label_encoder, "models/state_label_encoder.pkl")
 
     print("Emotion state model trained and saved successfully!")

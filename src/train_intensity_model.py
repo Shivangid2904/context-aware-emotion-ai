@@ -4,6 +4,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import mean_absolute_error
 from scipy.sparse import hstack
 
+from text_embedder import load_text_embedder
 from data_loader import load_data
 from preprocess import clean_data
 from feature_engineering import encode_metadata
@@ -22,7 +23,7 @@ def train_intensity_model():
 
     print("Loading TF-IDF vectorizer...")
 
-    vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
+    vectorizer = load_text_embedder("models/tfidf_vectorizer.pkl")
 
     print("Transforming text...")
 

@@ -1,12 +1,8 @@
 import pandas as pd
-from sklearn.feature_extraction.text import TfidfVectorizer
+from text_embedder import get_text_embedder
 
 def build_text_features(train_text, test_text):
-    vectorizer = TfidfVectorizer(
-    max_features=5000,
-    stop_words="english",
-    ngram_range=(1,2)
-)
+    vectorizer = get_text_embedder()
     X_train_text = vectorizer.fit_transform(train_text)
     X_test_text = vectorizer.transform(test_text)
     return X_train_text, X_test_text, vectorizer

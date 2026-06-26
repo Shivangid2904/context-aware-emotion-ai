@@ -5,6 +5,7 @@ import pandas as pd
 
 from scipy.sparse import hstack, csr_matrix
 
+from text_embedder import load_text_embedder
 from decision_engine import decide_action
 from message_generator import generate_message
 from feature_engineering import encode_metadata
@@ -59,7 +60,7 @@ time_of_day = st.selectbox(
 
 state_model = joblib.load("models/state_model.pkl")
 intensity_model = joblib.load("models/intensity_model.pkl")
-vectorizer = joblib.load("models/tfidf_vectorizer.pkl")
+vectorizer = load_text_embedder("models/tfidf_vectorizer.pkl")
 state_encoder = joblib.load("models/state_label_encoder.pkl")
 
 
