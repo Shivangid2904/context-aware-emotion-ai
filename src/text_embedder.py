@@ -57,6 +57,48 @@ class TfidfEmbedder(BaseTextEmbedder):
         return self
 
 
+class MiniLMEmbedder(BaseTextEmbedder):
+    def __init__(self, model_name="all-MiniLM-L6-v2"):
+        self.model_name = model_name
+        self._model = None
+
+    @property
+    def model(self):
+        if self._model is None:
+            from sentence_transformers import SentenceTransformer
+            import torch
+            device = "cuda" if torch.cuda.is_available() else "cpu"
+            self._model = SentenceTransformer(self.model_name, device=device)
+        return self._model
+
+    def fit(self, texts):
+        # No-op for pretrained embeddings
+        return self
+
+    def transform(self, texts):
+        if isinstance(texts, str):
+            texts = [texts]
+        elif hasattr(texts, "tolist"):
+            texts = texts.tolist()
+        else:
+            texts = list(texts)
+        return self.model.encode(texts, show_progress_bar=False)
+
+    def fit_transform(self, texts):
+        self.fit(texts)
+        return self.transform(texts)
+
+    def save(self, filepath):
+        # Save structural details to avoid pickling bulky PyTorch weights
+        joblib.dump({"backend_type": "minilm", "model_name": self.model_name}, filepath)
+
+    def load(self, filepath):
+        data = joblib.load(filepath)
+        self.model_name = data.get("model_name", "all-MiniLM-L6-v2")
+        self._model = None
+        return self
+
+
 def get_text_embedder(backend_type=None, **kwargs):
     """Factory function to instantiate text embedder based on backend type."""
     if backend_type is None:
@@ -64,6 +106,8 @@ def get_text_embedder(backend_type=None, **kwargs):
     
     if backend_type == "tfidf":
         return TfidfEmbedder(**kwargs)
+    elif backend_type == "minilm":
+        return MiniLMEmbedder(**kwargs)
     else:
         raise ValueError(f"Unknown text embedding backend: {backend_type}")
 
@@ -74,6 +118,10 @@ def load_text_embedder(filepath, backend_type=None):
         backend_type = TEXT_EMBEDDER
 
     obj = joblib.load(filepath)
+
+    # Check if it's a dict representing MiniLMEmbedder state
+    if isinstance(obj, dict) and obj.get("backend_type") == "minilm":
+        return MiniLMEmbedder(model_name=obj.get("model_name", "all-MiniLM-L6-v2"))
 
     # Backward compatibility check for raw TfidfVectorizer
     if isinstance(obj, sklearn.feature_extraction.text.TfidfVectorizer):

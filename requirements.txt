@@ -7,3 +7,5 @@ scipy
 streamlit
 fastapi
 uvicorn
+torch
+sentence-transformers
